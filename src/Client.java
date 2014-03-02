@@ -17,9 +17,9 @@ import java.net.*;
 	        		
 	            Socket echoSocket = new Socket(hostName, portNumber);
 	        	
-	            PrintWriter out =
-	                new PrintWriter(echoSocket.getOutputStream(), true);
-	            BufferedReader in =
+	            DataOutputStream outtoserver  =
+	                new DataOutputStream(echoSocket.getOutputStream());
+	            BufferedReader infromserver =
 	                new BufferedReader(
 	                    new InputStreamReader(echoSocket.getInputStream()));
 	            BufferedReader stdIn =
@@ -35,14 +35,14 @@ import java.net.*;
 	                if(tokens.length != 3) {
 	                	System.out.println("Wrong format, use: COMMAND URI HTTP-VERSION");
 	                }
-	                out.println(userInput);
+	                outtoserver.writeBytes(userInput + "/n");
 	                System.out.println("sent to google");  
-	                System.out.println(in.readLine());
-	                System.out.println(in.readLine());
-	                System.out.println(in.readLine());
-	                System.out.println(in.readLine());
-	                System.out.println(in.readLine());
-	                System.out.println(in.readLine());
+	                System.out.println(infromserver.readLine());
+	                System.out.println(infromserver.readLine());
+	                System.out.println(infromserver.readLine());
+	                System.out.println(infromserver.readLine());
+	                System.out.println(infromserver.readLine());
+	                System.out.println(infromserver.readLine());
 	                
 	                
 	            }
