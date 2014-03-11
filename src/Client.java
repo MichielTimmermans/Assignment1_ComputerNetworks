@@ -18,7 +18,7 @@ class Client {
 		//BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		//String serverInput;
 		
-		get(argv[1], server);
+		
 		
 		
 		if(argv[0].equals("GET")) {
@@ -29,7 +29,7 @@ class Client {
 		
 		
 		
-		/**
+		
 		else if (argv[0].equals("HEAD")) {
 			head(argv[1], server);
 		}
@@ -37,7 +37,7 @@ class Client {
 		else if (argv[0].equals("PUT")) {
 			put(argv[1], server);
 		}
-		
+		/*
 		else if (argv[0].equals("POST")) {
 			post(argv[1], server);
 		}*/
@@ -70,6 +70,7 @@ class Client {
 	
 	//////////////////////////////////ENKEL HTTP1.0//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void get(String URL, String server) throws Exception { ///////// exception catching nog fixen
+		////////////////////////////////image fetching
 		Socket clientSocket = new Socket(server, 80);
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
@@ -98,9 +99,11 @@ class Client {
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		
-		
-		outToServer.println("GET " + URL + " " + "HTTP/1.0");
+		String userInput = inFromUser.readLine();
+		int contentLength = userInput.length();
+		outToServer.println("PUT " + URL + " " + "HTTP/1.0"); //////////////////
+		outToServer.println("Content-Length: " + contentLength);
+		outToServer.println(userInput);
 		outToServer.println(""); 
 		String serverInput;
 		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
@@ -120,6 +123,11 @@ class Client {
 		if (!(argv[0].equals("GET") || argv[0].equals("HEAD") || argv[0].equals("PUT") || argv[0].equals("POST"))) {
 			System.out.println("Please use a valid HTTPCommand, choose from: GET, HEAD, PUT or POST");
 			System.out.println(argv[0]);
+			return false;
+		}
+		
+		if(!(argv[1].contains("/") && argv[1].contains("."))) {
+			System.out.println("Please use a valid URI");
 			return false;
 		}
 
