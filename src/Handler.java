@@ -34,8 +34,31 @@ public class Handler implements Runnable {
 		else System.out.println("unknown error in decode method");
 	}
 	
-	public void GET(String URI, PrintWriter outToClient) {
+	
+	//////////////////////////////////HTTTP1.0//////////////////////////////
+	public void GET(String URI, PrintWriter outToClient) throws Exception {
+		String response;
+		try {
+			response = readFile(URI);
+			
+		}
+		catch (Exception esc){
+			response = "No such file exists, please provide a valid URI.";
+		}
 		
+		outToClient.println(response);
+		outToClient.println("");
+	}
+	
+	public String readFile(String location) throws Exception {
+		FileReader fr = new FileReader("src/filte.txt");
+		BufferedReader tr = new BufferedReader(fr);
+		String text = "";
+		String temp;
+		while((temp = tr.readLine()) != null) {
+			text = text + temp + "\n";
+		}
+		return text;
 	}
 	
 	public boolean checkValidity(String sentence) {

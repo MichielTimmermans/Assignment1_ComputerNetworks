@@ -80,7 +80,7 @@ class Client {
 			
 
 	
-		//clientSocket.close();
+		
 	}
 	
 	//////////////////////////////////ENKEL HTTP1.0//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,9 +125,9 @@ class Client {
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		String userInput = inFromUser.readLine();
+		String userInput = inFromUser.readLine();   //////////////////////////supports only one line
 		int contentLength = userInput.length();
-		outToServer.println("PUT " + URL + " " + "HTTP/1.0"); //////////////////
+		outToServer.println("PUT " + URL + " " + "HTTP/1.0"); 
 		outToServer.println("Content-Length: " + contentLength);
 		outToServer.println(userInput);
 		outToServer.println(""); 
@@ -142,9 +142,9 @@ class Client {
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		String userInput = inFromUser.readLine();
+		String userInput = inFromUser.readLine(); ///////////////////supports only one line
 		int contentLength = userInput.length();
-		outToServer.println("POST " + URL + " " + "HTTP/1.0"); //////////////////
+		outToServer.println("POST " + URL + " " + "HTTP/1.0"); 
 		outToServer.println("Content-Length: " + contentLength);
 		outToServer.println(userInput);
 		outToServer.println(""); 
