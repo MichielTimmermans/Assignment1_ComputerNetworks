@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 class Client {
 	public static void main(String argv[]) throws Exception {
@@ -9,8 +10,16 @@ class Client {
 			return;
 		}
 		
-		String server = argv[1].split("/")[0];
+		String[] arg1 = argv[1].split("/"); 
+		String server = arg1[0];
+		int i = 1;
+		String URI = "";
+		while(i<arg1.length) {
+			URI = URI + "/" + arg1[i];
+			i++;
+		}
 		
+		//String server = argv[1].split("/")[0];
 		
 		//BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 		//Socket clientSocket = new Socket(server, 80);
@@ -22,7 +31,7 @@ class Client {
 		
 		
 		if(argv[0].equals("GET")) {
-			get(argv[1], server);
+			get(URI, server);
 			
 		}
 		
@@ -37,10 +46,16 @@ class Client {
 		else if (argv[0].equals("PUT")) {
 			put(argv[1], server);
 		}
-		/*
+		
 		else if (argv[0].equals("POST")) {
+			
 			post(argv[1], server);
-		}*/
+						
+		}
+		
+		else {
+			System.out.println("I don't know what went wrong.");
+		}
 		
 		
 			
@@ -71,13 +86,24 @@ class Client {
 	//////////////////////////////////ENKEL HTTP1.0//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void get(String URL, String server) throws Exception { ///////// exception catching nog fixen
 		////////////////////////////////image fetching
+		
 		Socket clientSocket = new Socket(server, 80);
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		outToServer.println("GET " + URL + " " + "HTTP/1.0");
 		outToServer.println(""); 
 		String serverInput;
-		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
+		String page = "";
+		while(( serverInput = inFromServer.readLine()) != null) {
+			System.out.println(serverInput);
+			page = page + serverInput;
+		}
+		String[] images = findImages(page);
+		int i =0; 
+		while(i<images.length){
+			System.out.println("Retrieved image: " + images[i]);
+			i++;   ////////////////////writetofile
+		}
 		clientSocket.close();
 	}
 	
@@ -108,6 +134,53 @@ class Client {
 		String serverInput;
 		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
 		clientSocket.close();
+	}
+	
+		////////////////////////ENKEL HTTP1.0////////////////////////////////////////////////////////
+	public static void post(String URL, String server) throws Exception {////////////exception catching nog fixen
+		Socket clientSocket = new Socket(server, 80);
+		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
+		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
+		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+		String userInput = inFromUser.readLine();
+		int contentLength = userInput.length();
+		outToServer.println("POST " + URL + " " + "HTTP/1.0"); //////////////////
+		outToServer.println("Content-Length: " + contentLength);
+		outToServer.println(userInput);
+		outToServer.println(""); 
+		String serverInput;
+		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
+		clientSocket.close();
+	}
+	
+	public static String[] findImages(String body) {
+		String[] intermediate = body.split("<img");
+		String[] imagecontainers = new String[intermediate.length-1];
+		int i = 1;
+		while(i<intermediate.length) {
+			imagecontainers[i-1] = intermediate[i];
+			i++;
+		}
+		i=0;
+		String temp;
+		ArrayList<String> result= new ArrayList<String>();
+		while(i<imagecontainers.length) {
+			temp = imagecontainers[i].split(">")[0];
+			temp = temp.substring(temp.indexOf("src=\""));
+			temp = temp.split("\"")[0];	
+			result.add(temp);
+			i++;
+		}
+		String[] res = new String[result.size()];
+		i=0;
+		while(i<result.size()) {
+			res[i] = result.get(i);
+			i++;
+		}
+		
+		return res;
+		
+		
 	}
 
 	public static boolean checkValidity(String argv[]) {
