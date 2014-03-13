@@ -30,8 +30,8 @@ public class Handler implements Runnable {
 				}
 			} catch (IOException e) {}
 						}
+		
 		String delimiters = "[ ]";
-		System.out.println(clientSentence);
 		String[] tokens = clientSentence.split(delimiters);
 		int i = 0;
 		while (i < 3) {
@@ -84,18 +84,27 @@ public class Handler implements Runnable {
 			response = "No such file exists, please provide a valid URI.";
 			
 		}
-		outToClient.println(URI);
+		
 		outToClient.println(response);
 		outToClient.println("");
 	}
 	
 	////////////////////////HTTP1.0/////////////:
 	public void post(String URI) throws Exception { //////////////exception handling
+		System.out.println("post started");
 		String temp;
 		String toPost = "";
 		while((temp = inFromClient.readLine()) != null) {
+			System.out.println("entered whileloop");
 			toPost = toPost + temp + "\n";
+			if(temp.equals("")) {
+				System.out.println("gonna break");
+				break;
+			}
+			System.out.println("didnt break");
 		}
+		System.out.println("topost: " + toPost);
+		System.out.println("uri: " + URI);
 		addToFile(URI,toPost);
 	}
 	
@@ -168,8 +177,9 @@ public class Handler implements Runnable {
 		if (!(file.exists() && file.isFile())) {
 			file.createNewFile();
 		}
+		String oldFile = readFile(filepath);
 		PrintWriter writer = new PrintWriter(new FileWriter(file));
-		writer.println("text");
+		writer.println(oldFile + text);
 		writer.close();
 		return true;
 	}

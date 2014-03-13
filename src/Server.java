@@ -4,34 +4,26 @@ import java.util.*;
 
 
 public class Server {
-	// handler maken, moet runnable implementeren
-	// nieuwe thread maken, en handler meegeven
-
-	
 	
 	public static void main(String argv[]) throws Exception {
-		ServerSocket servSocket = new ServerSocket(10009);
+		ServerSocket servSocket = new ServerSocket(10010);															//// Start up server
 		try {
 			
 			while (true) {
-			Socket connectionSocket = servSocket.accept();
-			if(connectionSocket != null) {
-				System.out.println("got request");
+			Socket connectionSocket = servSocket.accept();															//// Await incoming connection		
+			if(connectionSocket != null) {																			//// On incoming connection, start a new thread and give a connected socket to the Handler, which will take care of the request.
+				System.out.println("got request");																	
 				Handler h = new Handler(connectionSocket);
 				Thread thread = new Thread(h);
 				thread.start();
 			}
-		}
-		
-			//BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-			//PrintWriter outToClient = new PrintWriter(connectionSocket.getOutputStream(), true);
-			//String clientSentence = inFromClient.readLine();
-			
+		}	
+				
 			
 		}
 		
 		finally  {
-			servSocket.close();
+			servSocket.close();																						//// Make sure the socket gets closed in case of a crash,....
 		}
 	} 
 	
