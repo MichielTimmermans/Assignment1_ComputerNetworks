@@ -10,8 +10,10 @@ public class Server {
 	
 	
 	public static void main(String argv[]) throws Exception {
-		ServerSocket servSocket = new ServerSocket(10000);
-		while (true) {
+		ServerSocket servSocket = new ServerSocket(10009);
+		try {
+			
+			while (true) {
 			Socket connectionSocket = servSocket.accept();
 			if(connectionSocket != null) {
 				System.out.println("got request");
@@ -19,11 +21,17 @@ public class Server {
 				Thread thread = new Thread(h);
 				thread.start();
 			}
+		}
+		
 			//BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 			//PrintWriter outToClient = new PrintWriter(connectionSocket.getOutputStream(), true);
 			//String clientSentence = inFromClient.readLine();
 			
 			
+		}
+		
+		finally  {
+			servSocket.close();
 		}
 	} 
 	

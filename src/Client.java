@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 class Client {
 	
-	static int portNumber = 10000;
+	static int portNumber = 10009;
 	public static void main(String[] argc) throws Exception {
 		
 		String argv[] = {"HEAD", "localhost/index.txt", "HTTP/1.0"}	;

@@ -8,11 +8,7 @@ public class Handler implements Runnable {
 	Socket socket;
 
 	public Handler(Socket connectionSocket) throws Exception {
-		BufferedReader inFromClient = new BufferedReader(new InputStreamReader(
-				connectionSocket.getInputStream()));
-		PrintWriter outToClient = new PrintWriter(
-				connectionSocket.getOutputStream(), true);
-		String clientSentence = inFromClient.readLine();
+		
 		this.socket = connectionSocket;
 		System.out.println("handler made");
 	}
@@ -20,22 +16,39 @@ public class Handler implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("thread started");
+		try { this.inFromClient = new BufferedReader(new InputStreamReader(
+				socket.getInputStream()));
+		this.outToClient = new PrintWriter(
+				socket.getOutputStream(), true); }
+		catch (Exception e) {}
+		
+		System.out.println(inFromClient == null);
+		while(true) {
+			try {
+				if(!((clientSentence = inFromClient.readLine()) == null)) {
+					break;
+				}
+			} catch (IOException e) {}
+						}
 		String delimiters = "[ ]";
+		System.out.println(clientSentence);
 		String[] tokens = clientSentence.split(delimiters);
 		int i = 0;
 		while (i < 3) {
 			tokens[i] = tokens[i].replaceAll("\\s+", "");
 			i++;
 		}
+		String URI = tokens[1].substring(tokens[1].indexOf("/")+1);
+		
 		try {
 		if (tokens[0].equals("GET")) {
-			get(tokens[1]);
+			get(URI);
 		} else if (tokens[0].equals("HEAD")) {
-			head(tokens[1]);
+			head(URI);
 		} else if (tokens[0].equals("PUT")) {
-			put(tokens[1]);
+			put(URI);
 		} else if (tokens[0].equals("POST")) {
-			post(tokens[1]);
+			post(URI);
 		} else
 			System.out.println("unknown error in decode method");
 		socket.close();
@@ -63,12 +76,15 @@ public class Handler implements Runnable {
 	public void head(String URI) throws Exception {
 		String response;
 		try {
+			
 			response = readFile("server/" + URI).split("\n")[0];
+			
 
 		} catch (Exception esc) {
 			response = "No such file exists, please provide a valid URI.";
+			
 		}
-
+		outToClient.println(URI);
 		outToClient.println(response);
 		outToClient.println("");
 	}
