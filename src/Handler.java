@@ -14,11 +14,12 @@ public class Handler implements Runnable {
 				connectionSocket.getOutputStream(), true);
 		String clientSentence = inFromClient.readLine();
 		this.socket = connectionSocket;
-
+		System.out.println("handler made");
 	}
 
 	@Override
 	public void run() {
+		System.out.println("thread started");
 		String delimiters = "[ ]";
 		String[] tokens = clientSentence.split(delimiters);
 		int i = 0;

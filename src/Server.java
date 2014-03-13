@@ -10,10 +10,11 @@ public class Server {
 	
 	
 	public static void main(String argv[]) throws Exception {
-		ServerSocket servSocket = new ServerSocket(6789);
+		ServerSocket servSocket = new ServerSocket(10000);
 		while (true) {
 			Socket connectionSocket = servSocket.accept();
 			if(connectionSocket != null) {
+				System.out.println("got request");
 				Handler h = new Handler(connectionSocket);
 				Thread thread = new Thread(h);
 				thread.start();

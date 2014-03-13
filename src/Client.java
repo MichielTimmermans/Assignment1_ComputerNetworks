@@ -3,9 +3,11 @@ import java.net.*;
 import java.util.ArrayList;
 
 class Client {
-	public static void main(String argv[]) throws Exception {
+	
+	static int portNumber = 10000;
+	public static void main(String[] argc) throws Exception {
 		
-				
+		String argv[] = {"HEAD", "localhost/index.txt", "HTTP/1.0"}	;
 		if(!checkValidity(argv)) {
 			return;
 		}
@@ -87,7 +89,7 @@ class Client {
 	public static void get(String URL, String server) throws Exception { ///////// exception catching nog fixen
 		////////////////////////////////image fetching
 		
-		Socket clientSocket = new Socket(server, 80);
+		Socket clientSocket = new Socket(server, portNumber);
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		outToServer.println("GET " + URL + " " + "HTTP/1.0");
@@ -110,7 +112,7 @@ class Client {
 	
 	///////////////////GEEN HTTP1.1 versie nodig/////////////////////////////////////////////////////////////////
 	public static void head(String URL, String server) throws Exception { /////// exception catching nog fixen
-		Socket clientSocket = new Socket(server, 80);
+		Socket clientSocket = new Socket(server, portNumber);
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		outToServer.println("HEAD " + URL + " " + "HTTP/1.0");
@@ -123,7 +125,7 @@ class Client {
 	
 	////////////////////////ENKEL HTTP1.0////////////////////////////////////////////////////////
 	public static void put(String URL, String server) throws Exception {////////////exception catching nog fixen
-		Socket clientSocket = new Socket(server, 80);
+		Socket clientSocket = new Socket(server, portNumber);
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -141,7 +143,7 @@ class Client {
 	
 		////////////////////////ENKEL HTTP1.0////////////////////////////////////////////////////////
 	public static void post(String URL, String server) throws Exception {////////////exception catching nog fixen
-		Socket clientSocket = new Socket(server, 80);
+		Socket clientSocket = new Socket(server, portNumber);
 		PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));		
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));

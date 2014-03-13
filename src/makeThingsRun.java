@@ -5,10 +5,11 @@ public class makeThingsRun {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		String[] argv = new String[] {"HEAD", "google.com/index.html", "HTTP/1.0"};
-		
-		
-		Client.main(argv);
+		String[] argC = new String[] {"HEAD", "localhost/index.txt", "HTTP/1.0"};
+		String[] argS = new String[] {""};
+		Server.main(argS);
+		System.out.println("startclient");
+		Client.main(argC);
 		
 
 	}
