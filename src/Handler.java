@@ -26,26 +26,29 @@ public class Handler implements Runnable {
 			tokens[i] = tokens[i].replaceAll("\\s+", "");
 			i++;
 		}
-
+		try {
 		if (tokens[0].equals("GET")) {
-			get(tokens[1], this.outToClient);
+			get(tokens[1]);
 		} else if (tokens[0].equals("HEAD")) {
-			head(tokens[1], outToClient);
+			head(tokens[1]);
 		} else if (tokens[0].equals("PUT")) {
-			put(tokens[1], outToClient);
+			put(tokens[1]);
 		} else if (tokens[0].equals("POST")) {
-			post(tokens[1], outToClient);
+			post(tokens[1]);
 		} else
 			System.out.println("unknown error in decode method");
 		socket.close();
+		}
+		catch(Exception e) {}
+		
 		outToClient.close();
 	}
 
 	// ////////////////////////////////HTTTP1.0//////////////////////////////
-	public void get(String URI, PrintWriter outToClient) throws Exception {
+	public void get(String URI) throws Exception {
 		String response;
 		try {
-			response = readFile(URI);
+			response = readFile("server/" + URI);
 
 		} catch (Exception esc) {
 			response = "No such file exists, please provide a valid URI.";
@@ -56,10 +59,10 @@ public class Handler implements Runnable {
 	}
 
 	// ////////////////////////////////HTTTP1.0//////////////////////////////
-	public void head(String URI, PrintWriter outToClient) throws Exception {
+	public void head(String URI) throws Exception {
 		String response;
 		try {
-			response = readFile(URI).split("\n")[0];
+			response = readFile("server/" + URI).split("\n")[0];
 
 		} catch (Exception esc) {
 			response = "No such file exists, please provide a valid URI.";
@@ -68,9 +71,26 @@ public class Handler implements Runnable {
 		outToClient.println(response);
 		outToClient.println("");
 	}
+	
+	////////////////////////HTTP1.0/////////////:
+	public void post(String URI) throws Exception { //////////////exception handling
+		String temp;
+		String toPost = "";
+		while((temp = inFromClient.readLine()) != null) {
+			toPost = toPost + temp + "\n";
+		}
+		addToFile(URI,toPost);
+	}
+	
+	public void put(String URI) throws Exception {///////////exception handling
+		File file = new File(URI);
+		if(file.exists() && file.isFile()) {
+			post(URI);
+		}
+	}
 
 	public String readFile(String location) throws Exception {
-		FileReader fr = new FileReader("src/filte.txt");
+		FileReader fr = new FileReader(location);
 		BufferedReader tr = new BufferedReader(fr);
 		String text = "";
 		String temp;
@@ -109,6 +129,31 @@ public class Handler implements Runnable {
 					.println("Please use a valid HTTPVersion. Choose from: 1.0 or 1.1");
 			return false;
 		}
+		return true;
+	}
+	
+	
+	
+	public boolean addToFile(String filepath, String text) throws Exception { ///////////////////////////////////////exception handling
+		File file = new File(filepath);
+		String[] pathparts = filepath.split("/");
+		String partialpath = "";
+		int i =0;
+		while(i<pathparts.length-1) {
+			partialpath = partialpath + pathparts[i];
+			File temp = new File(partialpath);
+			if(! (temp.exists() && temp.isDirectory())) {
+				temp.mkdirs();
+			}
+			i++;
+		}
+		
+		if (!(file.exists() && file.isFile())) {
+			file.createNewFile();
+		}
+		PrintWriter writer = new PrintWriter(new FileWriter(file));
+		writer.println("text");
+		writer.close();
 		return true;
 	}
 

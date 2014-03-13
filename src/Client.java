@@ -104,6 +104,7 @@ class Client {
 			System.out.println("Retrieved image: " + images[i]);
 			i++;   ////////////////////writetofile
 		}
+		outToServer.close();
 		clientSocket.close();
 	}
 	
@@ -116,6 +117,7 @@ class Client {
 		outToServer.println(""); 
 		String serverInput;
 		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
+		outToServer.close();
 		clientSocket.close();
 	}
 	
@@ -133,6 +135,7 @@ class Client {
 		outToServer.println(""); 
 		String serverInput;
 		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
+		outToServer.close();
 		clientSocket.close();
 	}
 	
@@ -150,6 +153,7 @@ class Client {
 		outToServer.println(""); 
 		String serverInput;
 		while(( serverInput = inFromServer.readLine()) != null) System.out.println(serverInput);
+		outToServer.close();
 		clientSocket.close();
 	}
 	
