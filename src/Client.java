@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 class Client {
 
-	static int portNumber = 10010;																	////initialise portNumber
+	static int portNumber = 10012;																		////initialise portNumber
 
-	public static void main(String[] argc) throws Exception {										
+	public static void main(String[] argv) throws Exception {										
 
-		String argv[] = { "POST", "localhost/server/hey.txt", "HTTP/1.0" };							////  Check if Input arguments form a valid input with the method checkValidity()
-		if (!checkValidity(argv)) {
+									
+		if (!checkValidity(argv)) {																	////  Check if Input arguments form a valid input with the method checkValidity()
 			return;
 		}
 
@@ -23,21 +23,21 @@ class Client {
 		}
 
 		if (argv[0].equals("GET")) {
-			get(URI, server);
+			get(URI, server, argv[2]);
 
 		}
 
 		else if (argv[0].equals("HEAD")) {
-			head(argv[1], server);
+			head(argv[1], server, argv[2]);
 		}
 
 		else if (argv[0].equals("PUT")) {
-			put(argv[1], server);
+			put(argv[1], server, argv[2]);
 		}
 
 		else if (argv[0].equals("POST")) {
 
-			post(argv[1], server);
+			post(argv[1], server, argv[2]);
 
 		}
 
@@ -50,7 +50,7 @@ class Client {
 	}
 
 	
-	public static void get(String URL, String server) throws Exception {
+	public static void get(String URL, String server, String HTTPVersion) throws Exception {
 		Socket clientSocket = new Socket(server, portNumber);										//// Initialize the needed readers and writers
 		PrintWriter outToServer = new PrintWriter(
 				clientSocket.getOutputStream(), true);
@@ -68,15 +68,35 @@ class Client {
 		int i = 0;
 		while (i < images.length) {
 			System.out.println("Retrieved image: " + images[i]);
-			getImage(images[i]);																	//// Fetch the image to disk using the method getImage()
+			//getImage(images[i]);																	//// Fetch the image to disk using the method getImage() crashes sometimes
 			i++;
 		}
+		if(HTTPVersion.equals("HTTP/1.1")) {
+			getNewCommand();
+		}
+		
 		outToServer.close();
 		clientSocket.close();
+		
+		
+	}
+	
+	public static void getNewCommand() throws Exception {
+		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("new HTTPCommand: ");
+		String command = inFromUser.readLine();
+		System.out.println("new URI: ");
+		String URI = inFromUser.readLine();
+		System.out.println("new HTTPVersion: ");
+		String version = inFromUser.readLine();
+		String[] argumenten = {command, URI, version};
+		main(argumenten);
+		
 	}
 	
 	public static void getImage(String URL) throws Exception {
 		String server = URL.split("/")[0];															//// Get the server to connect to
+		System.out.println(URL);
 		Socket clientSocket = new Socket(server, portNumber);										//// Initialize readers and writers
 		PrintWriter outToServer = new PrintWriter(
 				clientSocket.getOutputStream(), true);
@@ -99,7 +119,7 @@ class Client {
 	}
 
 	
-	public static void head(String URL, String server) throws Exception { 
+	public static void head(String URL, String server, String HTTPVersion) throws Exception { 
 		Socket clientSocket = new Socket(server, portNumber);										//// Initialize readers and writers
 		PrintWriter outToServer = new PrintWriter(
 				clientSocket.getOutputStream(), true);
@@ -110,12 +130,15 @@ class Client {
 		String serverInput;
 		while ((serverInput = inFromServer.readLine()) != null)										//// Read input from server
 			System.out.println(serverInput);
+		if(HTTPVersion.equals("HTTP/1.1")) {
+			getNewCommand();
+		}
 		outToServer.close();
 		clientSocket.close();
 	}
 
 	
-	public static void put(String URL, String server) throws Exception {
+	public static void put(String URL, String server, String HTTPVersion) throws Exception {
 		Socket clientSocket = new Socket(server, portNumber);										//// Initialize readers and writers
 		PrintWriter outToServer = new PrintWriter(
 				clientSocket.getOutputStream(), true);
@@ -136,12 +159,15 @@ class Client {
 		String serverInput;
 		while ((serverInput = inFromServer.readLine()) != null)										//// Read server response
 			System.out.println(serverInput);
+		if(HTTPVersion.equals("HTTP/1.1")) {
+			getNewCommand();
+		}
 		outToServer.close();
 		clientSocket.close();
 	}
 
 	
-	public static void post(String URL, String server) throws Exception {
+	public static void post(String URL, String server, String HTTPVersion) throws Exception {
 		Socket clientSocket = new Socket(server, portNumber);										//// Initialize readers and writers
 		PrintWriter outToServer = new PrintWriter(
 				clientSocket.getOutputStream(), true);
@@ -162,6 +188,9 @@ class Client {
 		String serverInput;
 		while ((serverInput = inFromServer.readLine()) != null)										//// Read server response
 			System.out.println(serverInput);
+		if(HTTPVersion.equals("HTTP/1.1")) {
+			getNewCommand();
+		}
 		outToServer.close();
 		clientSocket.close();
 	}
@@ -179,9 +208,10 @@ class Client {
 		ArrayList<String> result = new ArrayList<String>();											//// Search for the src in the image tag and store the URI's in an ArrayList
 		while (i < imagecontainers.length) {
 			temp = imagecontainers[i].split(">")[0];
+			if(temp.indexOf("src=\"")>=0) {
 			temp = temp.substring(temp.indexOf("src=\""));
 			temp = temp.split("\"")[0];
-			result.add(temp);
+			result.add(temp); }
 			i++;
 		}
 		String[] res = new String[result.size()];													//// Copy the ArrayList into an array
